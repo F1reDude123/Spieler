@@ -159,9 +159,11 @@
     </style>
   </head>
   <body>
+    <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
       <h2>Inspector</h2>
       <hr>
+      <button style="margin-bottom:20px;">+ Add element</button>
     </div>
     
     <div id="canvas"></div>
@@ -200,16 +202,17 @@
         <div class="colorContainer">
           <div class="pixelSelect" style="background:#f00;" onclick="color = this.style.background;"></div>
           <div class="pixelSelect" style="background:#f70;" onclick="color = this.style.background;"></div>
-          <div class="pixelSelect" style="background:#fF0;" onclick="color = this.style.background;"></div>
+          <div class="pixelSelect" style="background:#ff0;" onclick="color = this.style.background;"></div>
           <div class="pixelSelect" style="background:#0f0;" onclick="color = this.style.background;"></div>
           <div class="pixelSelect" style="background:#00f;" onclick="color = this.style.background;"></div>
           <div class="pixelSelect" style="background:#f0f;" onclick="color = this.style.background;"></div>
           <div class="pixelSelect" style="background:#f7f;" onclick="color = this.style.background;"></div>
-          <div class="pixelSelect" style="background:#2f0;" onclick="color = this.style.background;"></div>
+          <div class="pixelSelect" style="background:#c40;" onclick="color = this.style.background;"></div>
           <div class="pixelSelect" style="background:#fff;" onclick="color = this.style.background;"></div>
           <div class="pixelSelect" style="background:#000;" onclick="color = this.style.background;"></div>
         </div>
       	<div class="texContainer"></div>
+        <button onclick="saveAsTexture(this.previousElementSibling); this.parentElement.parentElement.style.dislay = 'none';">Save</button>
       </div>
     </div>
     
@@ -331,7 +334,10 @@
     var color = "#000";
     
     function createAndEditTex(name, w, h) {
+      if (!name || !w || !h) return;
       var modal = document.getElementById("editTexModal");
+
+      modal.children[0].children[2].innerHTML = "";
       
       var step = Math.max(480 / w, 480 / h);
       
