@@ -1,0 +1,150 @@
+body {
+  background:#222;
+  color:#fff;
+  margin-left:308px;
+  font-family:"Roboto";
+  overflow:clip;
+}
+
+.sidebar {
+  background:#333;
+  position:absolute;
+  top:0;
+  left:0;
+  width:300px;
+  height:100%;
+  overflow:scroll;
+}
+.sidebar * {
+  margin-left:20px;
+}
+.sidebar > h1, h2, h3, h4, h5, h6, p {
+  margin-top:20px;
+}
+hr {
+  width:260px;
+  border:1px solid #555;
+}
+
+#canvas {
+  background:#000;
+  width:100%;
+  overflow:clip;
+  aspect-ratio:16/9;
+  display:block;
+  position:relative;
+}
+#canvas * {
+  position:absolute;
+}
+.modalBg {
+  background:#00000050;
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:1;
+  display:none;
+}
+.modal {
+  padding:20px;
+  background:#333;
+  border-radius:10px;
+  width:300px;
+  text-align:center;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+}
+footer {
+  background:#222;
+  border-top:1px solid #555;
+  position:absolute;
+  bottom:0;
+  width:calc(100% - 316px);
+  height:30px;
+}
+
+
+input, select {
+  background:#222;
+  color:#fff;
+  border:1px solid #555;
+  padding:5px;
+  border-radius:5px;
+}
+
+select {
+  color-scheme:dark;
+}
+
+input[type="range"] {
+  appearance:none;
+  background:#fff;
+  border:none;
+  height:3px;
+  padding:0px;
+}
+input[type="number"] {
+  width:50px;
+}
+
+button {
+  background:#36f;
+  border:1px solid #36f;
+  color:#fff;
+  padding:5px;
+  border-radius:5px;
+}
+button.footerBtn {
+  background:#222;
+  border:none;
+}
+button.footerBtn:hover {
+  background:#333;
+}
+button.footerBtn:active {
+  background:#222;
+}
+.xBtn {
+  position:absolute;
+  top:0;
+  right:0;
+  background:#f00;
+  border-top-right-radius:10px;
+  width:20px;
+  height:20px;
+  color:#fff;
+  user-select:none;
+}
+
+.pixelWhite {
+  background:#fff;
+}
+.pixelDark {
+  background:#aaa;
+}
+.pixelSelect {
+  width:48px;
+  height:48px;
+}
+
+.pixelWhite:hover, .pixelDark:hover {
+  background:#ccc;
+  display:inline-block;
+}
+
+.texContainer {
+  width:480px;
+  height:480px;
+  display:grid;
+}
+
+.colorContainer {
+  width:480px;
+  height:48px;
+  display:flex;
+  flex-direction:row;
+}
