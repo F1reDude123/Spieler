@@ -128,11 +128,9 @@
       
       .pixelWhite {
       	background:#fff;
-        display:inline-block;
       }
       .pixelDark {
       	background:#aaa;
-        display:inline-block;
       }
       .pixelSelect {
         width:48px;
@@ -212,7 +210,7 @@
           <div class="pixelSelect" style="background:#000;" onclick="color = this.style.background;"></div>
         </div>
       	<div class="texContainer"></div>
-        <button onclick="saveAsTexture(this.previousElementSibling); this.parentElement.parentElement.style.dislay = 'none';">Save</button>
+        <button onclick="genTex(this.previousElementSibling, 'noname'); this.parentElement.parentElement.style.dislay = 'none';">Save</button>
       </div>
     </div>
     
@@ -339,6 +337,11 @@
 
       modal.children[0].children[2].innerHTML = "";
       
+      modal.children[0].children[3].onclick = function() {
+        genTex(this.previousElementSibling, name);
+        this.parentElement.parentElement.style.dislay = "none";
+      };
+      
       var step = Math.max(480 / w, 480 / h);
       
       var idx = 0;
@@ -353,10 +356,12 @@
           block.style.width = step + "px";
           block.style.height = step + "px";
           block.onmousedown = function() {
+            this.className = "";
           	this.style.background = color;
           };
           block.onmouseover = function() {
           	if (mousedown) {
+              this.className = "";
               this.style.background = color;
             }
           };
@@ -369,6 +374,22 @@
       }
       
       modal.style.display = "block";
+    }
+
+    function genTex(elem, name) {
+      var canvas = document.createElement("canvas");
+      var ctx = canvas.getContext("2d");
+      var x = 0;
+      var y = 0;
+      
+      Array.from(elem.children).forEach(function(e) {
+        ctx.fillStyle = !e.className ? e.style.background || "transparent";
+        ctx.fillRect(x, y, e.style.width, e.style.height);
+        x += e.style.width;
+        y += e.style.height;
+      });
+
+      files[name] = canvas.toDataURL();
     }
     
     
