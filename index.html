@@ -172,7 +172,7 @@
         <h1>Add element</h1>
         <br>
         <input id="elemName" placeholder="Enter element name...">
-        <button onclick="addElem(this.previousElementSibling.value); this.parentElement.parentElement.style.display = 'none'; openInspector(this.previousElementSibling.value);">Add</button>
+        <button onclick="addElem(this.previousElementSibling.value); this.parentElement.parentElement.style.display = 'none'; openInspector(elements[this.previousElementSibling.value]);">Add</button>
       </div>
     </div>
 
