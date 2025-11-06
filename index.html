@@ -20,8 +20,8 @@
         height:100%;
         overflow:scroll;
       }
-      .sidebar > h1, h2, h3, h4, h5, h6, p {
-        margin:20px;
+      .sidebar * {
+      	margin-left:20px;
       }
       hr {
         width:260px;
@@ -161,6 +161,7 @@
     <div class="sidebar" id="sidebar">
       <h2>Inspector</h2>
       <hr>
+      <button onclick="document.getElementById('addElemModal').style.display = 'block';">+ Add element</button>
     </div>
     <div class="canvas" id="canvas"></div>
 
@@ -171,7 +172,7 @@
         <h1>Add element</h1>
         <br>
         <input id="elemName" placeholder="Enter element name...">
-        <button onclick="addElem(this.previousElementSibling.value); this.parentElement.parentElement.style.display = 'none'; openInspector(elemProps[this.previousElementSibling.value])">Add</button>
+        <button onclick="addElem(this.previousElementSibling.value); this.parentElement.parentElement.style.display = 'none';">Add</button>
       </div>
     </div>
 
@@ -196,19 +197,19 @@
       <div class="modal" style="width:480px;">
         <span class="xBtn" onclick="this.parentElement.parentElement.style.display = 'none'">&times;</span>
         <div class="colorContainer">
+          <input type="color" style="width:48px;height:48px;" onchange = "color = this.value;">
           <div class="pixelSelect" style="background:#f00;" onclick="color = this.style.background;"></div>
           <div class="pixelSelect" style="background:#f70;" onclick="color = this.style.background;"></div>
           <div class="pixelSelect" style="background:#ff0;" onclick="color = this.style.background;"></div>
           <div class="pixelSelect" style="background:#0f0;" onclick="color = this.style.background;"></div>
           <div class="pixelSelect" style="background:#00f;" onclick="color = this.style.background;"></div>
           <div class="pixelSelect" style="background:#f0f;" onclick="color = this.style.background;"></div>
-          <div class="pixelSelect" style="background:#f7f;" onclick="color = this.style.background;"></div>
           <div class="pixelSelect" style="background:#940;" onclick="color = this.style.background;"></div>
           <div class="pixelSelect" style="background:#fff;" onclick="color = this.style.background;"></div>
           <div class="pixelSelect" style="background:#000;" onclick="color = this.style.background;"></div>
         </div>
         <div class="texContainer"></div>
-        <button>Save</button>
+        <button onclick="">Save</button>
       </div>
     </div>
 
@@ -216,6 +217,7 @@
       <button class="footerBtn" onclick="document.getElementById('createTexModal').style.display = 'block';">Texture editor</button>
     </footer>
   </body>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
   <script>
     var frameRate = 60;
 
@@ -244,9 +246,11 @@
         Width: { value: 50, type: "nInput", min: 1, max: 100},
         Height: { value: 50, type: "nInput", min: 1, max: 100}
       };
+      
       var img = new Image();
       img.src = "";
       img.style = "";
+      img.onclick = openInspector(img);
       document.getElementById("canvas").appendChild(img);
       elements[name] = img;
     }
@@ -336,10 +340,10 @@
 
       editor.innerHTML = "";
 
-      modal.children[0].children[3].addEventListener("click", function() {
+      modal.children[0].children[3].onclick = function() {
         genTex(this.previousElementSibling, name);
         this.parentElement.parentElement.style.display = "none";
-      });
+      };
 
       var step = Math.min(480 / w, 480 / h);
 
@@ -376,28 +380,9 @@
     }
 
     function genTex(elem, name) {
-      var step = parseInt(elem.children[0].style.width);
-      var style = window.getComputedStyle(elem);
-      
-      var canvas2 = document.createElement("canvas");
-      canvas2.width = parseInt(style.width);
-      canvas2.height = parseInt(style.height);
-      var ctx2 = canvas2.getContext("2d");
-      
-      var idx = 0;
-      
-      for (var x = 0; x < parseInt(style.width); x += step) {
-        for (var y = 0; y < parseInt(style.height); y += step) {
-          ctx2.fillStyle = elem.children[idx].style.background;
-          
-          ctx2.fillRect(x, y, x + step, y + step);
-          
-          idx++;
-        }
-        idx++;
-      }
-      
-      files[name] = canvas2.toDataURL();
+      html2canvas(elem).then(canvas => {
+      	files[name] = canvas.toDataURL();
+      });
     }
 
 
