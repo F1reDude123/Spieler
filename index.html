@@ -163,7 +163,7 @@
       <hr>
       <button onclick="document.getElementById('addElemModal').style.display = 'block';">+ Add element</button>
     </div>
-    <div class="canvas" id="canvas"></div>
+    <div class="canvas" id="canvas" onclick="openInspector()"></div>
 
     <!-- Modal for adding elements -->
     <div class="modalBg" id="addElemModal">
@@ -341,7 +341,7 @@
       editor.innerHTML = "";
 
       modal.children[0].children[3].onclick = function() {
-        genTex(this.previousElementSibling, name);
+        genTex(this.previousElementSibling, name, w, h);
         this.parentElement.parentElement.style.display = "none";
       };
 
@@ -379,10 +379,29 @@
       modal.style.display = "block";
     }
 
-    function genTex(elem, name) {
-      html2canvas(elem).then(canvas => {
-      	files[name] = canvas.toDataURL();
-      });
+    function genTex(elem, name, w, h) {
+      var style = window.getComputedStyle(elem);
+      var step = Math.min(parseInt(style.width) / w, parseInt(style.height) / h);
+
+      var canvas2 = document.createElement("canvas");
+      canvas2.height = parseInt(style.height);
+      canvas2.width = parseInt(style.width);
+      var ctx2 = canvas2.getContext("2d");
+
+      var idx = 0;
+      
+      for (var y = 0; y < parseInt(style.height); y += step) {
+        for (var x = 0; x < parseInt(style.width); x += step) {
+          if (elem.children[idx].className == "") {
+          	ctx2.fillStyle = window.getComputedStyle(elem.children[idx]).backgroundColor;
+          	ctx2.fillRect(x, y, step, step);
+          }
+          
+          idx++;
+        }
+      }
+
+      files[name] = canvas2.toDataURL();
     }
 
 
