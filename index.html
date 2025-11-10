@@ -1,187 +1,177 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Game.js</title>
+  <head>
+    <title>Game.js</title>
     <style>
-      body {
-        background:#222;
-        color:#fff;
-        margin-left:308px;
-        font-family:"Roboto";
-        overflow:clip;
-      }
+      body {
+        background:#222;
+        color:#fff;
+        margin-left:308px;
+        font-family:"Roboto";
+        overflow:clip;
+      }
 
-      .sidebar {
-        background:#333;
-        position:absolute;
-        top:0;
-        left:0;
-        width:300px;
-        height:100%;
-        overflow:scroll;
-      }
-      .sidebar * {
-      	margin-left:20px;
-      }
-      hr {
-        width:260px;
-        border:1px solid #555;
-      }
+      .sidebar {
+        background:#333;
+        position:absolute;
+        top:0;
+        left:0;
+        width:300px;
+        height:100%;
+        overflow:scroll;
+      }
+      .sidebar * {
+      	margin-left:20px;
+      }
+      hr {
+        width:260px;
+        border:1px solid #555;
+      }
 
-      #canvas {
-        background:#000;
-        width:100%;
-        overflow:clip;
-        aspect-ratio:16/9;
-        display:block;
-        position:relative;
-      }
-      #canvas * {
-        position:absolute;
-      }
-      .modalBg {
-        background:#00000050;
-        position:absolute;
-        top:0;
-        left:0;
-        width:100%;
-        height:100%;
-        z-index:1;
-        display:none;
-      }
-      .modal {
-        padding:20px;
-        background:#333;
-        border-radius:10px;
-        width:300px;
-        text-align:center;
-        position:absolute;
-        top:50%;
-        left:50%;
-        transform:translate(-50%, -50%);
-      }
-      footer {
-        background:#222;
-        border-top:1px solid #555;
-        position:absolute;
-        bottom:0;
-        width:calc(100% - 316px);
-        height:30px;
-      }
+      #canvas {
+        background:#000;
+        width:100%;
+        overflow:clip;
+        aspect-ratio:16/9;
+        display:block;
+        position:relative;
+      }
+      #canvas * {
+        position:absolute;
+      }
+      .modalBg {
+        background:#00000050;
+        position:absolute;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        z-index:1;
+        display:none;
+      }
+      .modal {
+        padding:20px;
+        background:#333;
+        border-radius:10px;
+        width:300px;
+        text-align:center;
+        position:absolute;
+        top:50%;
+        left:50%;
+        transform:translate(-50%, -50%);
+      }
+      footer {
+        background:#222;
+        border-top:1px solid #555;
+        position:absolute;
+        bottom:0;
+        width:calc(100% - 316px);
+        height:30px;
+      }
 
-      input, select {
-        background:#222;
-        color:#fff;
-        border:1px solid #555;
-        padding:5px;
-        border-radius:5px;
-      }
+      input, select {
+        background:#222;
+        color:#fff;
+        border:1px solid #555;
+        padding:5px;
+        border-radius:5px;
+      }
 
-      select {
-        color-scheme:dark;
-      }
+      select {
+        color-scheme:dark;
+      }
 
-      input[type="range"] {
-        appearance:none;
-        background:#fff;
-        border:none;
-        height:3px;
-        padding:0px;
-      }
-      input[type="number"] {
-        width:50px;
-      }
+      input[type="range"] {
+        appearance:none;
+        background:#fff;
+        border:none;
+        height:3px;
+        padding:0px;
+      }
+      input[type="number"] {
+        width:50px;
+      }
 
-      button {
-        background:#36f;
-        border:1px solid #36f;
-        color:#fff;
-        padding:5px;
-        border-radius:5px;
-      }
-      button.footerBtn {
-        background:#222;
-        border:none;
-      }
-      button.footerBtn:hover {
-        background:#333;
-      }
-      button.footerBtn:active {
-        background:#222;
-      }
-      .xBtn {
-        position:absolute;
-        top:0;
-        right:0;
-        background:#f00;
-        border-top-right-radius:10px;
-        width:20px;
-        height:20px;
-        color:#fff;
-        user-select:none;
-      }
+      button {
+        background:#36f;
+        border:1px solid #36f;
+        color:#fff;
+        padding:5px;
+        border-radius:5px;
+      }
+      button.footerBtn {
+        background:#222;
+        border:none;
+      }
+      button.footerBtn:hover {
+        background:#333;
+      }
+      button.footerBtn:active {
+        background:#222;
+      }
+      .xBtn {
+        position:absolute;
+        top:0;
+        right:0;
+        background:#f00;
+        border-top-right-radius:10px;
+        width:20px;
+        height:20px;
+        color:#fff;
+        user-select:none;
+      }
 
-      .pixelWhite {
-        background:#fff;
-        border:none;
-      }
-      .pixelDark {
-        background:#aaa;
-        border:none;
-      }
-      .pixelSelect {
-        width:48px;
-        height:48px;
-        border:none;
-      }
+      .pixelWhite {
+        background:#fff;
+        border:none;
+      }
+      .pixelDark {
+        background:#aaa;
+        border:none;
+      }
+      .pixelSelect {
+        width:48px;
+        height:48px;
+        border:none;
+      }
 
-      .pixelWhite:hover, .pixelDark:hover, .pixelSelect:hover {
-        background:#ccc;
-      }
+      .pixelWhite:hover, .pixelDark:hover {
+        background:#ccc;
+        display:inline-block;
+      }
 
-      .texContainer {
-        max-width:480px;
-        max-height:480px;
-        width:fit-content;
-        height:fit-content;
-        display:grid;
-        justify-content:center;
-        padding:0px;
-      }
+      .texContainer {
+        max-width:480px;
+        max-height:480px;
+        width:fit-content;
+        height:fit-content;
+        display:grid;
+        justify-content:center;
+      }
 
-      .colorContainer {
-        width:480px;
-        height:48px;
-        display:flex;
-      }
-      .card {
-      	width:100px;
-        height:120px;
-        padding:10px;
-        text-align:center;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="sidebar" id="sidebar">
-      <h2>Inspector</h2>
-      <hr>
-      <button onclick="document.getElementById('addElemModal').style.display = 'block';">+ Add element</button>
-    </div>
-    <div class="canvas" id="canvas"></div>
-
-    <!-- Modal for adding elements -->
-    <div class="modalBg" id="addElemModal">
-      <div class="modal">
-        <span class="xBtn" onclick="this.parentElement.parentElement.style.display = 'none'">&times;</span>
-        <h1>Add element</h1>
-        <br>
-        <input id="elemName" placeholder="Enter element name...">
-        <button onclick="addElem(this.previousElementSibling.value); this.parentElement.parentElement.style.display = 'none'; openInspector(elemProps[this.previousElementSibling.value]);">Add</button>
-      </div>
-    </div>
-    
-    <!-- Modal for managing textures -->
+      .colorContainer {
+        width:480px;
+        height:48px;
+        display:flex;
+        flex-direction:row;
+      }
+      .card {
+      	width:100px;
+        height:120px;
+        padding:10px;
+        text-align:center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar" id="sidebar">
+      <h2>Inspector</h2>
+      <hr>
+      <button onclick="document.getElementById('addElemModal').style.display = 'block';">+ Add element</button>
+    </div>
+    <div class="canvas" id="canvas" onclick="openInspector()"></div>
+	
+    <!-- Modal for managing textures -->
     <div class="modalBg" id="manageTexModal">
       <div class="modal" style="width:500px;height:400px;">
       	<span class="xBtn" onclick="this.parentElement.parentElement.style.display = 'none'">&times;</span>
@@ -189,46 +179,56 @@
         <div style="display:flex;flex-direction:row;flex-wrap:wrap;" id="texes"></div>
       </div>
     </div>
+    
+    <!-- Modal for adding elements -->
+    <div class="modalBg" id="addElemModal">
+      <div class="modal">
+        <span class="xBtn" onclick="this.parentElement.parentElement.style.display = 'none'">&times;</span>
+        <h1>Add element</h1>
+        <br>
+        <input id="elemName" placeholder="Enter element name...">
+        <button onclick="addElem(this.previousElementSibling.value); this.parentElement.parentElement.style.display = 'none'; openInspector(elemProps[this.previousElementSibling.value]);">Add</button>
+      </div>
+    </div>
 
-    <!-- Modal for creating textures -->
-    <div class="modalBg" id="createTexModal">
-      <div class="modal">
-        <span class="xBtn" onclick="this.parentElement.parentElement.style.display = 'none'">&times;</span>
-        <h1>Create texture</h1>
-        <br>
-        <input id="texName" placeholder="Enter texture name...">
-        <br>
-        <input id="w" type="number" oninput="this.value = Math.min(this.max || 100, Math.max(this.min || 0, this.value));" placeholder="Width" min="1" max="1024">
-        <input id="h" type="number" oninput="this.value = Math.min(this.max || 100, Math.max(this.min || 0, this.value));" placeholder="Height" min="1" max="1024">
-        <br>
-        <br>
-        <button onclick="this.parentElement.parentElement.style.display = 'none'; createAndEditTex(document.getElementById('texName').value, parseInt(document.getElementById('w').value), parseInt(document.getElementById('h').value));">Create</button>
-      </div>
-    </div>
+    <!-- Modal for creating textures -->
+    <div class="modalBg" id="createTexModal">
+      <div class="modal">
+        <span class="xBtn" onclick="this.parentElement.parentElement.style.display = 'none'">&times;</span>
+        <h1>Create texture</h1>
+        <br>
+        <input id="texName" placeholder="Enter texture name...">
+        <br>
+        <input id="w" type="number" oninput="this.value = Math.min(this.max || 100, Math.max(this.min || 0, this.value));" placeholder="Width" min="1" max="1024">
+        <input id="h" type="number" oninput="this.value = Math.min(this.max || 100, Math.max(this.min || 0, this.value));" placeholder="Height" min="1" max="1024">
+        <br>
+        <br>
+        <button onclick="this.parentElement.parentElement.style.display = 'none'; createAndEditTex(document.getElementById('texName').value, parseInt(document.getElementById('w').value), parseInt(document.getElementById('h').value));">Create</button>
+      </div>
+    </div>
 
-    <!-- Modal for editing textures -->
-    <div class="modalBg" id="editTexModal">
-      <div class="modal" style="width:480px;">
-        <span class="xBtn" onclick="this.parentElement.parentElement.style.display = 'none'">&times;</span>
-        <div class="colorContainer">
-          <input type="color" style="width:48px;height:48px;" onchange = "color = this.value;">
-          <div class="pixelSelect" style="background:#f00;" onclick="color = this.style.background;"></div>
-          <div class="pixelSelect" style="background:#f70;" onclick="color = this.style.background;"></div>
-          <div class="pixelSelect" style="background:#ff0;" onclick="color = this.style.background;"></div>
-          <div class="pixelSelect" style="background:#0f0;" onclick="color = this.style.background;"></div>
-          <div class="pixelSelect" style="background:#00f;" onclick="color = this.style.background;"></div>
-          <div class="pixelSelect" style="background:#f0f;" onclick="color = this.style.background;"></div>
-          <div class="pixelSelect" style="background:#940;" onclick="color = this.style.background;"></div>
-          <div class="pixelSelect" style="background:#fff;" onclick="color = this.style.background;"></div>
-          <div class="pixelSelect" style="background:#000;" onclick="color = this.style.background;"></div>
-        </div>
-        <div class="texContainer"></div>
-        <br>
-        <button onclick="">Save</button>
-      </div>
-    </div>
-    
-    <!-- SCRIPTS -->
+    <!-- Modal for editing textures -->
+    <div class="modalBg" id="editTexModal">
+      <div class="modal" style="width:480px;">
+        <span class="xBtn" onclick="this.parentElement.parentElement.style.display = 'none'">&times;</span>
+        <div class="colorContainer">
+          <input type="color" style="width:48px;height:48px;" onchange = "color = this.value;">
+          <div class="pixelSelect" style="background:#f00;" onclick="color = this.style.background;"></div>
+          <div class="pixelSelect" style="background:#f70;" onclick="color = this.style.background;"></div>
+          <div class="pixelSelect" style="background:#ff0;" onclick="color = this.style.background;"></div>
+          <div class="pixelSelect" style="background:#0f0;" onclick="color = this.style.background;"></div>
+          <div class="pixelSelect" style="background:#00f;" onclick="color = this.style.background;"></div>
+          <div class="pixelSelect" style="background:#f0f;" onclick="color = this.style.background;"></div>
+          <div class="pixelSelect" style="background:#940;" onclick="color = this.style.background;"></div>
+          <div class="pixelSelect" style="background:#fff;" onclick="color = this.style.background;"></div>
+          <div class="pixelSelect" style="background:#000;" onclick="color = this.style.background;"></div>
+        </div>
+        <div class="texContainer"></div>
+        <button onclick="">Save</button>
+      </div>
+    </div>
+    
+    <!-- SCRIPTS -->
     
     <!-- Modal for managing scripts -->
     <div class="modalBg" id="manageScriptModal">
@@ -260,12 +260,12 @@
       </div>
     </div>
 
-    <footer>
-      <button class="footerBtn" onclick="document.getElementById('manageTexModal').style.display = 'block'; openTexes()">Texture editor</button>
-      <button class="footerBtn" onclick="document.getElementById('manageScriptModal').style.display = 'block'; openScripts()">Script editor</button>
-    </footer>
-  </body>
-  <script>
+    <footer>
+      <button class="footerBtn" onclick="document.getElementById('manageTexModal').style.display = 'block'; openTexes()">Texture editor</button>
+      <button class="footerBtn" onclick="document.getElementById('manageScriptModal').style.display = 'block'; openScripts()">Script editor</button>
+    </footer>
+  </body>
+  <script>
     var frameRate = 60;
 
 
@@ -518,7 +518,7 @@
     }
     
     function createAndEditScript(name) {
-      
+      document.getElementById("editScriptModal").style.display = 'block';
     }
     
     function openScripts() {
