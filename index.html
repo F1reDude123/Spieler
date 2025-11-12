@@ -477,6 +477,12 @@
             if (mousedown) {
               this.className = "";
               this.style.background = color;
+              this.onmouseover = function() {
+              	this.background = "#555";
+              };
+              this.onmouseout = function() {
+              	
+              };
             }
           };
 
