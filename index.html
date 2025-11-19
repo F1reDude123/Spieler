@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Game.js</title>
+    <title>Spieler</title>
     <style>
       body {
         background:#222;
@@ -170,24 +170,28 @@
         padding:10px;
         color:#fff;
       }
+      .gridContainer {
+      	display:flex;
+        flex-direction:row;
+        flex-wrap:wrap;
+        overflow:scroll;
+        max-height:280px;
+      }
     </style>
   </head>
   <body>
+  	<div class="nav" id="nav">
+      
+    </div>
+    
     <div class="sidebar" id="sidebar">
       <h2>Inspector</h2>
       <hr>
       <button onclick="document.getElementById('addElemModal').style.display = 'block';">+ Add element</button>
     </div>
-    <div class="canvas" id="canvas"></div>
-	
-    <!-- Modal for managing textures -->
-    <div class="modalBg" id="manageTexModal">
-      <div class="modal" style="width:500px;height:400px;">
-      	<span class="xBtn" onclick="this.parentElement.parentElement.style.display = 'none'">&times;</span>
-        <h1>Textures</h1>
-        <div style="display:flex;flex-direction:row;flex-wrap:wrap;" id="texes"></div>
-      </div>
-    </div>
+    <div id="container">
+      <div class="canvas" id="canvas"></div>
+    </div>
     
     <!-- Modal for adding elements -->
     <div class="modalBg" id="addElemModal">
@@ -199,6 +203,15 @@
         <button onclick="addElem(this.previousElementSibling.value); this.parentElement.parentElement.style.display = 'none'; openInspector(elemProps[this.previousElementSibling.value]);">Add</button>
       </div>
     </div>
+	
+    <!-- Modal for managing textures -->
+    <div class="modalBg" id="manageTexModal">
+      <div class="modal" style="width:500px;height:400px;">
+      	<span class="xBtn" onclick="this.parentElement.parentElement.style.display = 'none'">&times;</span>
+        <h1>Textures</h1>
+        <div class="gridContainer" id="texes"></div>
+      </div>
+    </div>
 
     <!-- Modal for creating textures -->
     <div class="modalBg" id="createTexModal">
@@ -242,10 +255,10 @@
     
     <!-- Modal for managing scripts -->
     <div class="modalBg" id="manageScriptModal">
-      <div class="modal" style="width:500px;height:400px;">
+      <div class="modal" style="width:500px;height:400px;overflow:scroll;">
       	<span class="xBtn" onclick="this.parentElement.parentElement.style.display = 'none'">&times;</span>
         <h1>Scripts</h1>
-        <div style="display:flex;flex-direction:row;flex-wrap:wrap;" id="scripts"></div>
+        <div class="gridContainer" id="scripts"></div>
       </div>
     </div>
 
@@ -284,15 +297,13 @@
         <input type="number" min="1" max="60" value="60" oninput="this.value = Math.min(this.max, Math.max(this.min, this.value)); framerate = this.value">
         <br>
         <p>Texture size</p>
-        <input type="number" min="1" max="1024" value="480" oninput="this.value = Math.min(this.max, Math.max(this.min, this.value)); xScale = this.value;">
-        x
-        <input type="number" min="1" max="1024" value="480" oninput="this.value = Math.min(this.max, Math.max(this.min, this.value)); yScale = this.value;">
+        <input type="number" min="1" max="100" value="10" oninput="this.value = Math.min(this.max, Math.max(this.min, this.value)); scale = this.value;">
       </div>
     </div>
     
     <div class="modalBg" id="gameModal">
-      <div class="modal" style="width:500px;height:400px;">
-      	<span class="xBtn" onclick="this.parentElement.parentElement.style.display = 'none'">&times;</span>
+      <div class="modal" style="width:fit-content;height:fit-content;">
+      	<span class="xBtn" onclick="this.parentElement.parentElement.style.display = 'none'; stopGame();">&times;</span>
         
       </div>
     </div>
@@ -301,30 +312,28 @@
       <button class="footerBtn" onclick="document.getElementById('manageTexModal').style.display = 'block'; openTexes()">Texture editor</button>
       <button class="footerBtn" onclick="document.getElementById('manageScriptModal').style.display = 'block'; openScripts()">Script editor</button>
       <button class="footerBtn" onclick="document.getElementById('projectSettingsModal').style.display = 'block';">Project settings</button>
+      <div style="position:absolute;bottom:4px;right:0px;">
+      	<button class="footerBtn" onclick="runGame()">Run</button>
+      </div>
     </footer>
   </body>
   <script>
-  	var xScale = 480;
-    var yScale = 480;
+  	var scale = 10;
     var frameRate = 60;
 
 
     var mousedown = false;
+    var mouseX = 0;
+    var mouseY = 0;
 
 
-    var files = {
-      Gollum: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjDfKWwhP2n5EU7p9jXPxztWy-Tu7nJXThkQ&s",
-      Smeegle: "https://miro.medium.com/1*VtT-3YYSAHOS1ZT0a0_nGQ.jpeg",
-      Gahllum: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjDfKWwhP2n5EU7p9jXPxztWy-Tu7nJXThkQ&s",
-      Smegle: "https://miro.medium.com/1*VtT-3YYSAHOS1ZT0a0_nGQ.jpeg",
-      Gollem: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjDfKWwhP2n5EU7p9jXPxztWy-Tu7nJXThkQ&s",
-      Smeagol: "https://miro.medium.com/1*VtT-3YYSAHOS1ZT0a0_nGQ.jpeg"
-    };
+    var files = {};
     
-    var scripts = {
-      Helloworld: function() { alert("Hello world!"); }
-    };
-
+    var scripts = {};
+    
+    var cycle = {
+      atTick: function(c) { runData.intervals.push(setInterval(c, 1000/frameRate)); }
+    };
 
     var elements = {};
     var elemProps = {};
@@ -342,7 +351,9 @@
         width: { value: 50, type: "nInput", min: 0, max: Infinity},
         height: { value: 50, type: "nInput", min: 0, max: Infinity},
         x: { value: 0, type: "nInput", min: -Infinity, max: Infinity},
-        y: { value: 0, type: "nInput", min: -Infinity, max: Infinity}
+        y: { value: 0, type: "nInput", min: -Infinity, max: Infinity},
+        rotation: { value: 0, type: "rInput", min: 0, max: 360},
+        script: { value: null, type: "sSelect"}
       };
       
       var img = new Image();
@@ -402,7 +413,7 @@
             sidebar.appendChild(input);
 
             break;
-          case "fSelect":
+          case "fSelect":
             var select = document.createElement("select");
             select.onchange = function() {
               elem[e].value = this.value;
@@ -436,10 +447,37 @@
             sidebar.appendChild(select);
 
             break;
+          case "sSelect":
+            var select = document.createElement("select");
+            select.onchange = function() {
+              elem[e].value = this.value;
+            };
+
+            var defOpt = document.createElement("option");
+            defOpt.textContent = "Choose a script";
+            defOpt.selected = true;
+            defOpt.disabled = true;
+
+            select.appendChild(defOpt);
+
+            Object.keys(scripts).forEach(script => {
+              var opt = document.createElement("option");
+              opt.textContent = script;
+
+              select.appendChild(opt);
+            });
+            
+            select.value = elem[e].value || "Choose a script";
+
+            sidebar.appendChild(select);
+
+            break;
         }
 
         sidebar.appendChild(document.createElement("br"));
       });
+      
+      sidebar.appendChild(document.createElement("br"));
     }
 
     var color = "#000";
@@ -456,7 +494,7 @@
         this.parentElement.parentElement.style.display = "none";
       };
 
-      var step = Math.floor(Math.min(480 / w, 480 / h));
+      var step = Math.min(480 / w, 480 / h);
 
       var idx = 0;
 
@@ -477,12 +515,6 @@
             if (mousedown) {
               this.className = "";
               this.style.background = color;
-              this.onmouseover = function() {
-              	this.background = "#555";
-              };
-              this.onmouseout = function() {
-              	
-              };
             }
           };
 
@@ -494,22 +526,39 @@
       }
       modal.style.display = "block";
     }
+    
+    function createAndEditScript(name) {
+      if (!name) return;
+      var modal = document.getElementById("editScriptModal");
+      
+      modal.children[0].children[1].value = "";
+      
+      modal.children[0].children[2].onclick = function() {
+      	var code = this.previousElementSibling.value;
+        
+        scripts[name] = new Function("elements", "cycle", code);
+        
+        this.parentElement.parentElement.style.display = "none";
+      };
+      modal.style.display = "block";
+    }
 
     function genTex(elem, name, w, h) {
-      var step = Math.floor(Math.min(xScale / w, yScale / h));
+      var xStep = (w * scale) / w;
+      var yStep = (h * scale) / h;
 
       var canvas2 = document.createElement("canvas");
-      canvas2.height = yScale;
-      canvas2.width = xScale;
+      canvas2.height = h * scale;
+      canvas2.width = w * scale;
       var ctx2 = canvas2.getContext("2d");
 
       var idx = 0;
       
-      for (var y = 0; y < h*step; y += step) {
-        for (var x = 0; x < w*step; x += step) {
+      for (var y = 0; y < h * scale; y += yStep) {
+        for (var x = 0; x < w * scale; x += xStep) {
           if (elem.children[idx].className == "") {
           	ctx2.fillStyle = window.getComputedStyle(elem.children[idx]).backgroundColor;
-          	ctx2.fillRect(x, y, step, step);
+          	ctx2.fillRect(x, y, xStep, yStep);
           }
           
           idx++;
@@ -517,22 +566,6 @@
       }
 
       files[name] = canvas2.toDataURL();
-      
-      document.querySelectorAll("select").forEach(select => {
-        select.innerHTML = "";
-      	var defOpt = document.createElement("option");
-        defOpt.textContent = "Choose a file";
-        defOpt.disabled = true;
-
-        select.appendChild(defOpt);
-
-        Object.keys(files).forEach(file => {
-          var opt = document.createElement("option");
-          opt.textContent = file;
-
-          select.appendChild(opt);
-        });
-      });
     }
     
     function openTexes() {
@@ -564,14 +597,16 @@
           
           card.appendChild(img);
           card.appendChild(p);
+          
+          card.onclick = function() {
+          	this.parentElement.parentElement.parentElement.style.display = "none";
+            
+          	openTex(e);
+          };
           
           document.getElementById("texes").appendChild(card);
         };
       });
-    }
-    
-    function createAndEditScript(name) {
-      document.getElementById("editScriptModal").style.display = 'block';
     }
     
     function openScripts() {
@@ -590,7 +625,7 @@
       
       Object.keys(scripts).forEach(e => {
       	var img = new Image();
-        img.src = "https://f1redude123.github.io/Game.js/scriptLogo.svg";
+        img.src = "https://f1redude123.github.io/Spieler/scriptLogo.svg";
         var card = document.createElement("div");
         card.className = "card";
 
@@ -602,38 +637,152 @@
 
         card.appendChild(img);
         card.appendChild(p);
+        
+        card.onclick = function() { openScript(e); };
 
         document.getElementById("scripts").appendChild(card);
       });
     }
+    
+    function openTex(name) {
+      var modal = document.getElementById("editTexModal");
+      var editor = modal.children[0].children[2];
+
+      editor.innerHTML = "";
+      
+      var idx = 0;
+
+      var tex = new Image();
+      tex.src = files[name];
+      tex.onload = function() {
+      	var w = this.naturalWidth;
+        var h = this.naturalHeight;
+        
+        var xStep = 480 / (w / scale);
+        var yStep = 480 / (h / scale);
+        
+        var step = Math.min(xStep, yStep);
+        
+        editor.style.gridTemplateColumns = `repeat(${w / scale}, ${step}px)`;
+      	editor.style.gridTemplateRows = `repeat(${h / scale}, ${step}px)`;
+        
+        var canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        
+        var ctx = canvas.getContext("2d");
+        
+        ctx.drawImage(this, 0, 0, w, h);
+        
+        for (var y = 0; y < h; y += scale) {
+          for (var x = 0; x < w ; x += scale) {
+          	var block = document.createElement("div");
+            block.style.width = step + "px";
+            block.style.height = step + "px";
+            
+            var data = ctx.getImageData(x, y, 1, 1).data;
+            
+            if (!data[3]) {
+              block.className = idx % 2 == 0 ? "pixelWhite" : "pixelDark";
+            }
+            else {
+              block.className = "";
+              block.style.background = `rgb(${data[0]}, ${data[1]}, ${data[2]})`;
+            }
+            
+            block.onmousedown = function() {
+              this.className = "";
+              this.style.background = color;
+            };
+            block.onmouseover = function() {
+              if (mousedown) {
+                this.className = "";
+                this.style.background = color;
+              }
+            };
+
+            editor.appendChild(block);
+
+            idx++;
+          }
+          if ((w / scale) % 2 == 0) idx++;
+        }
+      };
+      
+      modal.style.display = "block";
+    }
+    
+    function openScript(name) {
+      var modal = document.getElementById("editScriptModal");
+      
+      modal.children[0].children[1].value = scripts[name].toString().substring(38, scripts[name].toString().length-2);
+      
+      modal.children[0].children[2].onclick = function() {
+      	var code = this.previousElementSibling.value;
+        
+        scripts[name] = new Function("elements", "cycle", code);
+        
+        this.parentElement.parentElement.style.display = "none";
+      };
+      modal.style.display = "block";
+    }
     
 
     var canvas = document.getElementById("canvas");
 
-    var loop;
-    var startLoop = function() {
-      loop = setInterval(() => {
+    function startLoop() {
+      setTimeout(() => {
         for (var i of Object.keys(elements)) {
           elements[i].src = files[elemProps[i].texture.value];
           elements[i].style.width = elemProps[i].width.value + "px";
           elements[i].style.height = elemProps[i].height.value + "px";
           elements[i].style.left = elemProps[i].x.value + "px";
           elements[i].style.top = elemProps[i].y.value + "px";
+          elements[i].style.transform = `rotateZ(${elemProps[i].rotation.value}deg)`;
         }
+        
+        startLoop();
       }, 1000/frameRate);
     }
 
     startLoop();
-
+	
+    
+    var runData = {
+      intervals: []
+    };
+    
 	
     function runGame() {
+      document.getElementById("gameModal").style.display = "block";
       
+      var modal = document.getElementById("gameModal").children[0];
+      
+      canvas.style.width = window.getComputedStyle(canvas).width;
+      
+      canvas.parentElement.removeChild(canvas);
+      modal.appendChild(canvas);
+      
+      for (var i of Object.keys(elemProps)) {
+      	scripts[elemProps[i].script.value](elemProps, cycle);
+      }
+    }
+    
+    function stopGame() {
+      runData.intervals.forEach(e => {
+      	clearInterval(e);
+      });
+      
+      canvas.parentElement.removeChild(canvas);
+      document.getElementById("container").appendChild(canvas);
+      canvas.style.width = "100%";
     }
     
 
     document.addEventListener("mousedown", function() {
       mousedown = true;
     });
+    
     document.addEventListener("mouseup", function() {
       mousedown = false;
     });
