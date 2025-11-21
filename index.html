@@ -318,7 +318,11 @@
     </footer>
   </body>
   <script>
+  	var canvas = document.getElementById("canvas");
+    
   	var scale = 10;
+    var pixelSize = 1080 / parseInt(window.getComputedStyle(canvas).width);
+    
     var frameRate = 60;
 
 
@@ -421,8 +425,8 @@
               	var img = new Image();
                 img.src = files[this.value];
                 img.onload = function() {
-                  elem.width.value = this.naturalWidth;
-                  elem.height.value = this.naturalHeight;
+                  elem.width.value = this.naturalWidth / pixelSize;
+                  elem.height.value = this.naturalHeight / pixelSize;
                   openInspector(elem);
                 };
               }
@@ -544,18 +548,18 @@
     }
 
     function genTex(elem, name, w, h) {
-      var xStep = (w * scale) / w;
-      var yStep = (h * scale) / h;
+      var xStep = ((w * scale) / w) * pixelSize;
+      var yStep = ((h * scale) / h) * pixelSize;
 
       var canvas2 = document.createElement("canvas");
-      canvas2.height = h * scale;
-      canvas2.width = w * scale;
+      canvas2.height = h * scale * pixelSize;
+      canvas2.width = w * scale * pixelSize;
       var ctx2 = canvas2.getContext("2d");
 
       var idx = 0;
       
-      for (var y = 0; y < h * scale; y += yStep) {
-        for (var x = 0; x < w * scale; x += xStep) {
+      for (var y = 0; y < canvas2.height; y += yStep) {
+        for (var x = 0; x < canvas2.width; x += xStep) {
           if (elem.children[idx].className == "") {
           	ctx2.fillStyle = window.getComputedStyle(elem.children[idx]).backgroundColor;
           	ctx2.fillRect(x, y, xStep, yStep);
@@ -666,11 +670,11 @@
         editor.style.gridTemplateColumns = `repeat(${w / scale}, ${step}px)`;
       	editor.style.gridTemplateRows = `repeat(${h / scale}, ${step}px)`;
         
-        var canvas = document.createElement("canvas");
-        canvas.width = w;
-        canvas.height = h;
+        var canvas2 = document.createElement("canvas");
+        canvas2.width = w;
+        canvas2.height = h;
         
-        var ctx = canvas.getContext("2d");
+        var ctx = canvas2.getContext("2d");
         
         ctx.drawImage(this, 0, 0, w, h);
         
@@ -726,18 +730,15 @@
       };
       modal.style.display = "block";
     }
-    
-
-    var canvas = document.getElementById("canvas");
-
+	
     function startLoop() {
-      setTimeout(() => {
+      setTimeout(function() {
         for (var i of Object.keys(elements)) {
           elements[i].src = files[elemProps[i].texture.value];
-          elements[i].style.width = elemProps[i].width.value + "px";
-          elements[i].style.height = elemProps[i].height.value + "px";
-          elements[i].style.left = elemProps[i].x.value + "px";
-          elements[i].style.top = elemProps[i].y.value + "px";
+          elements[i].style.width = elemProps[i].width.value * pixelSize + "px";
+          elements[i].style.height = elemProps[i].height.value * pixelSize + "px";
+          elements[i].style.left = elemProps[i].x.value * pixelSize + "px";
+          elements[i].style.top = elemProps[i].y.value * pixelSize + "px";
           elements[i].style.transform = `rotateZ(${elemProps[i].rotation.value}deg)`;
         }
         
